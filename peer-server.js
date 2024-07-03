@@ -1,29 +1,29 @@
 const { ExpressPeerServer } = require('peer');
 const express = require('express');
-const app = express();
+const http = require('http');
 
-const PORT = 9000;
+const app = express();
+const PORT = process.env.PORT || 9000; // Use environment variable for port
 
 // Create HTTP server with Express
-const server = require('http').createServer(app);
+const server = http.createServer(app);
 
 // Set up PeerServer
 const peerServer = ExpressPeerServer(server, {
-    debug: true,
-    secure:false,
-    path: '/myapp' // Replace with your desired path
+  debug: true,
+  allow_discovery: true,
+  path: '/myapp' // Replace with your desired path
 });
 
 // Mount PeerServer
 app.use('/peerjs', peerServer);
 
-
-app.get("/",(req,res)=>{
-
-    res.send("server running")
-})
+// Test route to check server status
+app.get('/', (req, res) => {
+  res.send('Server running');
+});
 
 // Start server
 server.listen(PORT, () => {
-    console.log(`PeerJS Server is running on port ${PORT}`);
+  console.log(`PeerJS Server is running on port ${PORT}`);
 });
